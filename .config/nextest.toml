@@ -1,4 +1,4 @@
-# nextest config for this example's workspace; does not affect `cargo test`.
+# nextest config for this workspace; does not affect `cargo test`.
 
 [profile.default]
 # Each test builds a full PIR demo instance: measured peak RSS 2.0 GiB per

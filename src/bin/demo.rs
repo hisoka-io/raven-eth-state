@@ -3,7 +3,7 @@
 //! concurrent private reads, and prints the gates plus measured serving QPS. `--mode anvil`
 //! drives a real node instead of the deterministic synthetic corpus.
 //!
-//! Run: `cargo run --manifest-path examples/eth-state/Cargo.toml --profile ci-test --bin demo`
+//! Run: `cargo run --manifest-path adapters/eth-state/Cargo.toml --profile ci-test --bin demo`
 
 #![allow(clippy::expect_used, clippy::print_stdout, clippy::print_stderr)]
 

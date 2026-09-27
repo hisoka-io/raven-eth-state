@@ -67,7 +67,7 @@ serial_test = "3"
 
 # Release-grade test profile: InsPIRe setup/respond is too slow under the dev
 # profile (apparent hang, not a real failure). debug-assertions stay on for test
-# correctness. Run: cargo test --manifest-path examples/eth-state/Cargo.toml --profile ci-test
+# correctness. Run: cargo test --manifest-path adapters/eth-state/Cargo.toml --profile ci-test
 [profile.ci-test]
 inherits = "release"
 debug-assertions = true
