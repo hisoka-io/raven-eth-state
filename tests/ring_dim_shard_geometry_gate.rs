@@ -2,8 +2,7 @@
 //! runtime, and `fold.rs` declares `shard_size_bytes = ring_dim * entry_size`
 //! against buffers sized `ENTRIES_PER_SHARD * entry_size`. At `ring_dim != 2048`
 //! the declared and actual geometry disagree with no error, and reads return
-//! wrong bytes as `Ok` — the adapter guards this same rule at
-//! `validate_rows_per_shard`; the demo must refuse too, not compute.
+//! wrong bytes as `Ok`, so seeding must refuse rather than compute.
 #![allow(clippy::expect_used, clippy::unwrap_used, clippy::panic)]
 
 use eth_state::fold::MainSidecar;

@@ -38,8 +38,8 @@ fn main() -> ExitCode {
         }
         #[cfg(not(feature = "anvil-e2e"))]
         println!(
-            "anvil mode (real E2E via alloy/tokio) is the Sepolia-promotion path; rebuild with \
-             --features anvil-e2e against a running anvil node. Running the synthetic offline gate."
+            "anvil mode needs a build with --features anvil-e2e and a running anvil node. \
+             Running the synthetic corpus instead."
         );
     }
 
@@ -91,12 +91,12 @@ fn main() -> ExitCode {
     );
     println!();
     println!(
-        "Honest caveats: anonymity set = ONE shard (2048 entries; shard_id is plaintext), NOT \
-         full N. The demo detects STALENESS (C2), not server FORGERY (an eth_getProof Merkle \
-         witness is a documented later extension). Main and sidecar wire shapes are uniform \
-         (32B / 16 column polys) so a response-size observer cannot infer which engine answered. \
-         The sidecar buys INSTANT FRESHNESS + a scale lever, not avoiding a main re-preprocess. \
-         Serving-QPS is the binding constraint and is machine-measured above."
+        "Caveats: the anonymity set is ONE shard (2048 entries; shard_id is plaintext), not \
+         the full corpus. The demo detects staleness (C2), not a forging server: there is no \
+         eth_getProof Merkle check. Main and sidecar responses have the same shape (32 B / 16 \
+         column polys), so a response-size observer cannot tell which engine answered. The \
+         sidecar gives immediate freshness between folds; it does not avoid re-encoding main. \
+         Serving QPS is the binding constraint and is measured above."
     );
 
     if c1 && c2 && c3 && c4 && c5 {

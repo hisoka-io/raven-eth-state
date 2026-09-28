@@ -1,6 +1,5 @@
-//! Cached-vs-noncached respond latency table, moved out of the test lane: the
-//! cache-USE guard is the non-timing poisoned-cache test in
-//! `tests/cached_respond_kat.rs`; this harness publishes the speedup numbers.
+//! Cached-vs-noncached respond latency. Cache use is guarded without timing by the
+//! poisoned-cache test in `tests/cached_respond_kat.rs`; this reports the speedup.
 //! Run by hand: `cargo test --profile ci-test --bench cached_respond_latency_bench -- --ignored`.
 #![allow(
     clippy::expect_used,

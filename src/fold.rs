@@ -1,5 +1,5 @@
-//! Main+sidecar fold and atomic reset. Kept demo-local: `Engine` in `crates/server` is a flat
-//! registry, one consumer short of the floor that earns an abstraction.
+//! Main+sidecar fold and atomic reset. Kept in this crate: `raven_server::Engine` is a flat
+//! registry, and this is the only main+sidecar consumer.
 //!
 //! Ordering is load-bearing: the old main serves throughout, the main swap precedes the durable
 //! commit, dirty shards clear only after it succeeds, and the sidecar resets LAST. A crash before
@@ -139,7 +139,7 @@ impl MainSidecar {
             marker: 0,
         };
         // Base snapshot so a later recover() has something to load.
-        this.commit_v6()?;
+        this.commit_snapshot()?;
         Ok((this, main_sk, side_sk))
     }
 
@@ -304,7 +304,7 @@ impl MainSidecar {
 
         // MUST precede the dirty clear: until it lands, recovery is snapshot plus WAL. Its
         // publish also seals the log, so the next recover replays only the post-fold tail.
-        self.commit_v6()?;
+        self.commit_snapshot()?;
 
         self.dirty.clear();
         self.changed.clear();
@@ -314,8 +314,8 @@ impl MainSidecar {
         Ok(())
     }
 
-    /// Stops inside the genuine `[swap_state .. commit_v6)` window: no commit, no dirty clear,
-    /// no sidecar reset.
+    /// Stops inside the genuine `[swap_state .. commit_snapshot)` window: no commit, no dirty
+    /// clear, no sidecar reset.
     #[cfg(test)]
     pub fn fold_abort_after_swap(&mut self) -> Result<(), EthStateError> {
         if self.dirty.is_empty() {
@@ -396,7 +396,7 @@ impl MainSidecar {
 
     /// Persist the store rows plus manifest. The store already holds the post-update rows, so a
     /// recovery from this snapshot reconstructs the folded state.
-    fn commit_v6(&mut self) -> Result<(), EthStateError> {
+    fn commit_snapshot(&mut self) -> Result<(), EthStateError> {
         let store_snap = self
             .store
             .snapshot_concrete()
@@ -478,8 +478,8 @@ impl MainSidecar {
             rec[..n].copy_from_slice(&v[..n]);
             merged.insert(k, rec);
         }
-        // Open at last-committed-seq so post-recovery appends stay monotonic above any archived
-        // range; None at seq 0 means a fresh WAL.
+        // `open_recovery` opened the WAL at the replay floor, so post-recovery appends stay
+        // monotonic above any archived range.
         let wal = recovery.wal;
         let replay = recovery.replay;
         for entry in replay.entries {
@@ -770,11 +770,11 @@ mod wal_floor {
             .current_snapshot_seq
     }
 
-    /// `fold` seals no WAL range of its own because `commit_v6` already published through the
-    /// log head. The middle assertion pins the window where an unsealed range does exist.
+    /// `fold` seals no WAL range of its own because `commit_snapshot` already published through
+    /// the log head. The middle assertion pins the window where an unsealed range does exist.
     #[test]
     #[serial]
-    fn commit_v6_advances_the_floor_to_the_log_head() {
+    fn commit_snapshot_advances_the_floor_to_the_log_head() {
         let dir = tempfile::tempdir().expect("tempdir");
         let params = InspireParams::secure_128_d2048();
         let n = 64usize;
@@ -801,17 +801,17 @@ mod wal_floor {
             ms.wal.next_seq()
         );
 
-        ms.commit_v6().expect("commit");
+        ms.commit_snapshot().expect("commit");
         assert_eq!(
             published_floor(&ms),
             ms.wal.next_seq(),
-            "commit_v6 must seal through the log head"
+            "commit_snapshot must seal through the log head"
         );
     }
 
     #[test]
     #[serial]
-    fn commit_v6_applies_raven_snapshot_retention() {
+    fn commit_snapshot_applies_raven_snapshot_retention() {
         let dir = tempfile::tempdir().expect("tempdir");
         let params = InspireParams::secure_128_d2048();
         let database = vec![0u8; 64 * ENTRY_SIZE];
@@ -820,7 +820,7 @@ mod wal_floor {
                 .expect("seed");
 
         for _ in 0..6 {
-            main_sidecar.commit_v6().expect("commit");
+            main_sidecar.commit_snapshot().expect("commit");
         }
 
         let mut snapshot_names = std::fs::read_dir(main_sidecar.layout.snapshots_dir())

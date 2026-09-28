@@ -13,8 +13,7 @@ use eth_state::{pad_record, unpad_record, ENTRY_SIZE, PRESENT_TAG};
 use proptest::prelude::*;
 
 proptest! {
-    // Tier A - pure byte layout, no I/O. Measured 0.01 s for the whole binary at 256 x 5, so the
-    // default count is right; it is stated explicitly so the budget is visible at the call site.
+    // Pure byte layout, no I/O: the default case count is cheap. Stated so the budget is visible.
     #![proptest_config(ProptestConfig::with_cases(256))]
 
     #[test]
@@ -67,12 +66,11 @@ proptest! {
 
 /// Freezes the byte layout against a future widening or a dropped tag.
 ///
-/// The two constants are pinned as LITERALS on purpose. Every property above is
+/// The two constants are pinned as literals on purpose: every property above is
 /// written in terms of `PRESENT_TAG` and `ENTRY_SIZE`, so a change to either
-/// value moves the assertions with it and the whole file stays green - proven by
-/// mutation: `PRESENT_TAG = 0x02` left all six tests passing. Both are
-/// persisted-format constants, carried in the WAL payload and in every PIR
-/// corpus record, so a silent change re-reads every stored record.
+/// would move those assertions with it and stay green. Both are persisted-format
+/// constants, carried in the WAL payload and in every PIR corpus record, so a
+/// silent change misreads every stored record.
 #[test]
 fn presence_tag_layout_kat() {
     assert_eq!(

@@ -57,7 +57,7 @@ fn cached_respond_kat() {
 /// seam must change (or refuse) the response served through the scheme's respond.
 /// The cached and uncached paths are byte-identical by design, so the ONLY way
 /// poisoned bytes can equal the honest bytes is a respond that never read the
-/// cache it was handed — the silent-fallback regression this test exists to catch.
+/// cache it was handed, which is the silent fallback this test catches.
 #[cfg(feature = "cached-respond")]
 #[test]
 #[serial]
@@ -104,6 +104,3 @@ fn cached_respond_actually_uses_the_cache() {
         }
     }
 }
-
-// The latency table (100x floor) lives in benches/cached_respond_latency_bench.rs;
-// the cache-USE guard here is non-timing, so it holds in every lane and under load.

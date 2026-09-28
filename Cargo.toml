@@ -3,16 +3,12 @@ name = "eth-state"
 version = "0.1.0"
 edition = "2021"
 publish = false
-# Matches every other manifest in the tree and the root LICENSE. Without it
-# cargo-deny reports error[unlicensed] and this was the one manifest of 26
-# missing the key.
 license = "Apache-2.0"
 # The optional anvil-e2e Alloy graph declares this floor.
 rust-version = "1.91"
 
-# Detached workspace: kept OUT of the root [members] so the demo's native
-# ingestion deps never enter the wasm-clean client path, and so the demo cannot
-# break the live adapter.
+# Detached workspace: kept out of the root [members] so the demo's native
+# ingestion deps never enter the wasm client build.
 [workspace]
 
 [dependencies]
@@ -28,8 +24,8 @@ rand_chacha = "0.3"
 futures = "0.3"
 bincode = "1"
 serde = { version = "1", features = ["derive"] }
-# Native, server-side only, and gated behind anvil-e2e so the default build (and the offline
-# synthetic gate) pulls zero new deps; never on the wasm-clean client path.
+# Native and server-side only, gated behind anvil-e2e so the default build pulls no
+# network deps.
 alloy = { version = "1", default-features = false, features = [
     "provider-http",
     "provider-anvil-api",
@@ -43,7 +39,7 @@ tokio = { version = "1", default-features = false, features = [
 default = ["cached-respond"]
 # Serve through the cached InsPIRe respond path. Off -> non-cached baseline.
 cached-respond = []
-# Real anvil JSON-RPC E2E driver (alloy/tokio). Off by default: the synthetic mode is the gate.
+# Real anvil JSON-RPC E2E driver (alloy/tokio). Off by default; the synthetic corpus needs no node.
 anvil-e2e = ["dep:alloy", "dep:tokio"]
 
 # Mirror the root deny set (the detached workspace cannot inherit workspace.lints). expect/unwrap
@@ -65,9 +61,8 @@ proptest = "1"
 # parallelism OOM-kills `cargo test` on a modest machine. #[serial] caps peak to one Demo.
 serial_test = "3"
 
-# Release-grade test profile: InsPIRe setup/respond is too slow under the dev
-# profile (apparent hang, not a real failure). debug-assertions stay on for test
-# correctness. Run: cargo test --manifest-path adapters/eth-state/Cargo.toml --profile ci-test
+# Release-grade test profile: InsPIRe setup/respond under the dev profile is slow
+# enough to look like a hang. debug-assertions stay on.
 [profile.ci-test]
 inherits = "release"
 debug-assertions = true

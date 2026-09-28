@@ -87,10 +87,7 @@ fn append_past_shard_boundary() {
 
     demo.fold().expect("fold");
 
-    // An account the block never touched must survive the fold byte-identically. Absorbed from
-    // fold_while_serving, whose Sidecar-then-Main half this test already asserted verbatim
-    // (shared kill proven: forcing the sidecar leg to win reds both at their post-fold read).
-    // Asserted here, where the fold also grew a shard, rather than over a plain fold.
+    // An account the block never touched must survive a fold that also grew a shard.
     let untouched = demo.accounts[200];
     let (ok_u, _) = demo.read_verify(&untouched).expect("untouched read");
     assert!(ok_u, "untouched account byte-identical across the fold");

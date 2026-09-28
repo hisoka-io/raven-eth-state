@@ -1,6 +1,6 @@
 //! Anvil JSON-RPC driver. Seeds balances via the cheat codes (no signing, no gas), reads them
 //! back, and serves them through the same consume-both fan-out and verifier as the synthetic
-//! gate. Requires a running anvil node.
+//! corpus. Requires a running anvil node.
 
 // Operator-facing driver output.
 #![allow(clippy::print_stdout)]
