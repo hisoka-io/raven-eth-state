@@ -15,7 +15,9 @@ rust-version = "1.91"
 raven-core = { path = "../../crates/core" }
 raven-server = { path = "../../crates/server" }
 raven-client = { path = "../../crates/client" }
-raven-inspire = { path = "../../crates/inspire" }
+# The demo seeds each session from the secret its engine setup returns; no wallet path
+# builds a key under a caller secret.
+raven-inspire = { path = "../../crates/inspire", features = ["caller-secret-keys"] }
 raven-storage = { path = "../../crates/storage" }
 bytes = "1"
 thiserror = "2"
