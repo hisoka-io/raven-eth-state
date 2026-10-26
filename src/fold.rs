@@ -651,7 +651,7 @@ mod entry_size_gate {
     fn seed_refuses_unsupported_legal_width_before_store_publication() {
         let parent = tempfile::tempdir().expect("tempdir");
         let store_path = parent.path().join("seed-store");
-        let params = InspireParams::secure_128_d2048();
+        let params = InspireParams::d2048();
         let database = vec![0u8; LEGAL_UNSUPPORTED_ENTRY_SIZE];
 
         let outcome = MainSidecar::seed(
@@ -676,7 +676,7 @@ mod entry_size_gate {
     fn recover_refuses_unsupported_legal_width_before_store_open() {
         let parent = tempfile::tempdir().expect("tempdir");
         let store_path = parent.path().join("recover-store");
-        let params = InspireParams::secure_128_d2048();
+        let params = InspireParams::d2048();
 
         let outcome = MainSidecar::recover(
             &params,
@@ -709,7 +709,7 @@ mod kill_mid_fold {
     use serial_test::serial;
 
     fn read_main(ms: &MainSidecar, sk: RlweSecretKey, leaf: u64) -> Vec<u8> {
-        let params = InspireParams::secure_128_d2048();
+        let params = InspireParams::d2048();
         let crs = ms.main.current_snapshot().state.crs.clone();
         let shard_cfg = ms.main.current_snapshot().state.encoded_db.config.clone();
         let session = build_session(&crs, sk, params.sigma, 1).expect("session");
@@ -723,7 +723,7 @@ mod kill_mid_fold {
     #[serial]
     fn swap_commit_window_self_heals() {
         let dir = tempfile::tempdir().expect("tempdir");
-        let params = InspireParams::secure_128_d2048();
+        let params = InspireParams::d2048();
         let seed = 0x0000_5147u64;
         let n = 64usize;
         let mut db = vec![0u8; n * ENTRY_SIZE];
@@ -776,7 +776,7 @@ mod wal_floor {
     #[serial]
     fn commit_snapshot_advances_the_floor_to_the_log_head() {
         let dir = tempfile::tempdir().expect("tempdir");
-        let params = InspireParams::secure_128_d2048();
+        let params = InspireParams::d2048();
         let n = 64usize;
         let mut db = vec![0u8; n * ENTRY_SIZE];
         for i in 0..n {
@@ -813,7 +813,7 @@ mod wal_floor {
     #[serial]
     fn commit_snapshot_applies_raven_snapshot_retention() {
         let dir = tempfile::tempdir().expect("tempdir");
-        let params = InspireParams::secure_128_d2048();
+        let params = InspireParams::d2048();
         let database = vec![0u8; 64 * ENTRY_SIZE];
         let (mut main_sidecar, _main_key, _sidecar_key) =
             MainSidecar::seed(&params, &database, ENTRY_SIZE, dir.path(), 0x0000_A5F1)

@@ -59,7 +59,7 @@ async fn run_async(rpc_url: &str, num_accounts: usize, reads: usize) -> Result<(
         ledger.push(u128::from_be_bytes(low));
     }
 
-    let params = InspireParams::secure_128_d2048();
+    let params = InspireParams::d2048();
     let mut db = vec![0u8; num_accounts * ENTRY_SIZE];
     for (i, &bal) in ledger.iter().enumerate() {
         let rec = normalize_balance_be(&bal.to_be_bytes())?;

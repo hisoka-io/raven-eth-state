@@ -13,7 +13,7 @@ use raven_inspire::params::InspireParams;
 /// constant must be refused at build time with both quantities named.
 #[test]
 fn seeding_at_a_ring_dim_that_disagrees_with_entries_per_shard_is_refused() {
-    let params = InspireParams::secure_128_d4096();
+    let params = InspireParams::d4096();
     assert_ne!(
         params.ring_dim, ENTRIES_PER_SHARD,
         "precondition: the probe preset must disagree with the shard constant"

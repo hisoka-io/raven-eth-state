@@ -20,7 +20,7 @@ fn read_recovered_main(
     sk: raven_inspire::rlwe::RlweSecretKey,
     leaf: u64,
 ) -> Vec<u8> {
-    let params = InspireParams::secure_128_d2048();
+    let params = InspireParams::d2048();
     let crs = ms.main.current_snapshot().state.crs.clone();
     let shard_cfg = ms.main.current_snapshot().state.encoded_db.config.clone();
     let session = build_session(&crs, sk, params.sigma, 1).expect("session");
@@ -41,13 +41,9 @@ fn kill_mid_fold_recover() {
         demo.apply_block(5, &[(addr, 424_242)]).expect("apply");
     }
 
-    let (ms2, main_sk, _side_sk) = MainSidecar::recover(
-        &InspireParams::secure_128_d2048(),
-        ENTRY_SIZE,
-        dir.path(),
-        seed,
-    )
-    .expect("recover");
+    let (ms2, main_sk, _side_sk) =
+        MainSidecar::recover(&InspireParams::d2048(), ENTRY_SIZE, dir.path(), seed)
+            .expect("recover");
     let got = read_recovered_main(&ms2, main_sk, 77);
     let expected = normalize_balance_be(&(424_242u128).to_be_bytes()).expect("norm");
     assert_eq!(

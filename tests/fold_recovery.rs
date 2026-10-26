@@ -42,7 +42,7 @@ fn sealed_bytes(data_dir: &std::path::Path) -> u64 {
 }
 
 fn read_main(ms: &MainSidecar, sk: RlweSecretKey, leaf: u64) -> Vec<u8> {
-    let params = InspireParams::secure_128_d2048();
+    let params = InspireParams::d2048();
     let crs = ms.main.current_snapshot().state.crs.clone();
     let shard_cfg = ms.main.current_snapshot().state.encoded_db.config.clone();
     let session = build_session(&crs, sk, params.sigma, 1).expect("session");
@@ -78,7 +78,7 @@ fn materialize_early_break() {
 #[serial]
 fn dedup_whole_shard_reuses_sidecar() {
     let dir = tempfile::tempdir().expect("tempdir");
-    let params = InspireParams::secure_128_d2048();
+    let params = InspireParams::d2048();
     let n = 64usize; // one shard, fully covered by the change below
     let mut db = vec![0u8; n * ENTRY_SIZE];
     for i in 0..n {
@@ -110,7 +110,7 @@ fn dedup_whole_shard_reuses_sidecar() {
 #[serial]
 fn wal_archive_after_fold_recover() {
     let dir = tempfile::tempdir().expect("tempdir");
-    let params = InspireParams::secure_128_d2048();
+    let params = InspireParams::d2048();
     let n = 64usize;
     let mut db = vec![0u8; n * ENTRY_SIZE];
     for i in 0..n {
@@ -146,7 +146,7 @@ fn wal_archive_after_fold_recover() {
 #[serial]
 fn recover_rejects_manifest_identity_mismatch() {
     let dir = tempfile::tempdir().expect("tempdir");
-    let params = InspireParams::secure_128_d2048();
+    let params = InspireParams::d2048();
     let db = vec![0u8; 64 * ENTRY_SIZE];
     let seed = 0x0000_1D00u64;
     let (main_sidecar, _main_key, _sidecar_key) =
@@ -170,7 +170,7 @@ fn recover_rejects_manifest_identity_mismatch() {
 #[serial]
 fn recover_rejects_manifest_cell_shape_mismatch() {
     let dir = tempfile::tempdir().expect("tempdir");
-    let params = InspireParams::secure_128_d2048();
+    let params = InspireParams::d2048();
     let db = vec![0u8; 64 * ENTRY_SIZE];
     let seed = 0x0000_1D01u64;
     let (main_sidecar, _main_key, _sidecar_key) =
@@ -202,7 +202,7 @@ fn recover_rejects_manifest_cell_shape_mismatch() {
 #[serial]
 fn recover_refuses_legacy_manifest_when_rows_per_shard_cannot_be_derived() {
     let dir = tempfile::tempdir().expect("tempdir");
-    let params = InspireParams::secure_128_d2048();
+    let params = InspireParams::d2048();
     let db = vec![0u8; 64 * ENTRY_SIZE];
     let seed = 0x0000_1D02u64;
     let (main_sidecar, _main_key, _sidecar_key) =
@@ -231,7 +231,7 @@ fn recover_refuses_legacy_manifest_when_rows_per_shard_cannot_be_derived() {
 #[serial]
 fn cached_respond_survives_shard_growth() {
     let dir = tempfile::tempdir().expect("tempdir");
-    let params = InspireParams::secure_128_d2048();
+    let params = InspireParams::d2048();
     let n = 64usize; // one seeded shard
     let mut db = vec![0u8; n * ENTRY_SIZE];
     for i in 0..n {

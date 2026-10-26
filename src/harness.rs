@@ -135,7 +135,7 @@ impl Demo {
         data_dir: impl Into<PathBuf>,
         seed: u64,
     ) -> Result<Self, EthStateError> {
-        let params = InspireParams::secure_128_d2048();
+        let params = InspireParams::d2048();
         let mut flat = FlatIndex::new();
         let mut ledger = Ledger::new();
         let mut accounts = Vec::with_capacity(num_accounts);

@@ -38,7 +38,7 @@ fn build_db(balances: &[u128]) -> Vec<u8> {
 
 #[test]
 fn sidecar_wiring() {
-    let params = InspireParams::secure_128_d2048();
+    let params = InspireParams::d2048();
 
     // The sidecar holds only the changed leaf 2; every other sidecar leaf reads as absent.
     let main_db = build_db(&[100, 200, 300, 0]);

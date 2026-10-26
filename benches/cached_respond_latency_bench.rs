@@ -34,7 +34,7 @@ fn build_corpus(n: usize) -> Vec<u8> {
             Cache USE is guarded non-temporally by cached_respond_actually_uses_the_cache in \
             tests/cached_respond_kat.rs; run this by hand for the speedup number."]
 fn cached_vs_noncached_latency() {
-    let params = InspireParams::secure_128_d2048();
+    let params = InspireParams::d2048();
     let seed = 0x0000_CB00u64;
     let db = build_corpus(ENTRIES_PER_SHARD);
     let (state, sk) = build_flat_state(&params, &db, ENTRY_SIZE, seed).expect("state");

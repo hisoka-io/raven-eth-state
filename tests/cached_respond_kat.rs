@@ -31,7 +31,7 @@ fn build_corpus(n: usize) -> Vec<u8> {
 #[test]
 #[serial]
 fn cached_respond_kat() {
-    let params = InspireParams::secure_128_d2048();
+    let params = InspireParams::d2048();
     let seed = 0x0000_CA00u64;
     let db = build_corpus(8);
     let (state, sk) = build_flat_state(&params, &db, ENTRY_SIZE, seed).expect("state");
@@ -68,7 +68,7 @@ fn cached_respond_actually_uses_the_cache() {
     use raven_inspire::inspiring::OfflinePackingKeys;
     use raven_server::PirScheme;
 
-    let params = InspireParams::secure_128_d2048();
+    let params = InspireParams::d2048();
     let seed = 0x0000_CC00u64;
     let db = build_corpus(8);
     let (mut state, sk) = build_flat_state(&params, &db, ENTRY_SIZE, seed).expect("state");

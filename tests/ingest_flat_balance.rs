@@ -45,7 +45,7 @@ fn brute_materialize(snap: &MemorySnapshot, shard_id: u32, entry_size: usize) ->
 
 #[test]
 fn ingest_flat_balance() {
-    let params = InspireParams::secure_128_d2048();
+    let params = InspireParams::d2048();
     let dir = tempfile::tempdir().expect("tempdir");
 
     // 3000 accounts across shards 0 and 1, balance = leaf + 1.

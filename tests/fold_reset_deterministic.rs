@@ -41,7 +41,7 @@ fn read(
 
 #[test]
 fn fold_reset_deterministic() {
-    let params = InspireParams::secure_128_d2048();
+    let params = InspireParams::d2048();
     let dir = tempfile::tempdir().expect("tempdir");
 
     // 5000 accounts span shards 0, 1 and 2; balance = leaf + 1.
